@@ -1,15 +1,19 @@
 FROM node:20-alpine
 RUN npm i -g pnpm
 ENV SHELL=bash
-RUN pnpm setup
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN mkdir -p /svr/app
-WORKDIR /svr/app
-RUN pnpm i -g @nestjs/cli
-COPY package.json .
-COPY pnpm-lock.yaml .
+WORKDIR /app
+COPY package*.json .
+COPY ./pnpm-lock.yaml .
+#RUN pnpm i -g @nestjs/cli
+RUN --mount=type=bind,source=package.json,target=package.json \
+  --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+  --mount=type=cache,target=/root/.local/share/pnpm/store \
+  pnpm install --frozen-lockfile
 COPY . .
+#RUN pnpm exec prisma migrate dev --name init
 # Value set in .env file.
 EXPOSE $BACKEND_PORT
-CMD ["pnpm", "start:dev"]
+
+CMD [ "pnpm", "start:dev" ]

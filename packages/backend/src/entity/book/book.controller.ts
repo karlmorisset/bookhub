@@ -24,9 +24,8 @@ export class BookController {
   @TsRestHandler(contract.createBook)
   createBook(@Body() body: CreateBook) {
     return tsRestHandler(contract.createBook, async () => {
-      const book: CreateBook = await this.service.createBook(body);
-
-      return { status: 201, body: book };
+        const book: CreateBook = await this.service.createBook(body);
+        return { status: 201, body: book };
     });
   }
 

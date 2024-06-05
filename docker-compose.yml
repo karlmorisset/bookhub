@@ -12,7 +12,11 @@ services:
       - "./packages/frontend/src:/usr/src/app/src"
     command: "pnpm dev --host"
     networks:
-      - bp-network
+      - bookhub-network
+    depends_on:
+      - bookhub-database
+    links:
+      - bookhub-database
   backend:
     container_name: backend
     build:
@@ -24,34 +28,35 @@ services:
       - ./packages/backend:/svr/app
       - "./scripts/wait.sh:/wait.sh"
       - /svr/app/node_modules
+    command: "pnpm start:dev"
     networks:
-      - bp-network
+      - bookhub-network
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     depends_on:
-      - bp-pg-db
+      - bookhub-database
     links:
-      - bp-pg-db
-  bp-pg-db:
+      - bookhub-database
+  bookhub-database:
     image: postgres:12-alpine
     restart: always
-    container_name: bp-pg-db
+    container_name: bookhub-database
     env_file:
       - .env
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      PGDATA: /var/lib/postgresql/data
       POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+      PGDATA: /var/lib/postgresql/data
     ports:
       - "${DB_PORT}:${DB_PORT}"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - bp-network
+      - bookhub-network
 volumes:
   pgdata:
   pgadmin:
 networks:
-  bp-network:
+  bookhub-network:
     driver: bridge

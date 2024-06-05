@@ -10,13 +10,16 @@ type User = z.infer<typeof UserSchema>;
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  // async getUsers(): Promise<User[]> {
-  //   return (await this.prisma.user.findMany()) as User;
-  // }
+  async getUsers(): Promise<User[] | []> {
+    const users = await this.prisma.user.findMany();
+    return users as User[];
+  }
 
-  // getUser(id: string): string {
-  //   return `Hello user #${id}`;
-  // }
+  async  getUser(id: number): User {
+    const user: User = await this.prisma.user.findUnique({ where: { id } });
+
+    return user as User;
+  }
 
   async createUser(payload: Prisma.UserCreateInput): Promise<User> {
     const user = await this.prisma.user.create({ data: payload });

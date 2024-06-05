@@ -11,11 +11,11 @@ type Book = z.infer<typeof BookSchema>;
 export class BookService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getBooks(): Promise<Book[]> {
-    const books: Book[] = await this.prisma.book.findMany();
+  // async getBooks(): Promise<Book[]> {
+  //   const books: Book[] = await this.prisma.book.findMany();
 
-    return books;
-  }
+  //   return books;
+  // }
 
   // getBook(id: string): string {
   //   return `Hello book #${id}`;
