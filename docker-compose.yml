@@ -54,6 +54,17 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - bookhub-network
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: nest-pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - '5050:80'
+    depends_on:
+      - bookhub-database
 volumes:
   pgdata:
   pgadmin:
